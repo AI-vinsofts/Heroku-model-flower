@@ -8,13 +8,14 @@ import heapq
 import cv2
 
 app = Flask(__name__)
-
+try:
+    model = load_model(r'model')
+except:
+    print("load model failed")
 
 
 
 def topacc(imagepath):
-    model = load_model(r'model')
-    print(model)
     x = np.expand_dims(imagepath, axis=0)
     imagepath = cv2.cvtColor(imagepath, cv2.COLOR_BGR2RGB)
     imagepath = cv2.resize(imagepath, (224, 224)).astype('float16')
