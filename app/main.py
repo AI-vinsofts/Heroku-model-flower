@@ -35,11 +35,14 @@ def topacc(imagepath):
 
 @app.route('/', methods=['GET', 'POST'])
 def uploadfile():
+    print("success")
     file = request.files['image'].read()
+    print(file)
     npimg = np.fromstring(file, np.uint8)
     img = cv2.imdecode(npimg, cv2.IMREAD_COLOR)
     try:
         result = str(topacc(img))
+        print(result)
         return (result)
     except:
         print('failed')
