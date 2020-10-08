@@ -1,25 +1,27 @@
-import tensorflow as tf
+
 from tensorflow.python.keras.preprocessing import image
 from tensorflow.python.keras.models import load_model
-from flask import Flask
-from flask import jsonify, request
+from flask import Flask, request
 import numpy as np
-import heapq
 import cv2
 
 app = Flask(__name__)
-try:
-    model = load_model(r'model')
-except:
-    print("load model failed")
 
 
+model = load_model(r'model')
 
 def topacc(imagepath):
+    
     x = np.expand_dims(imagepath, axis=0)
+
     imagepath = cv2.cvtColor(imagepath, cv2.COLOR_BGR2RGB)
     imagepath = cv2.resize(imagepath, (224, 224)).astype('float16')
-    preds = model.predict(np.expand_dims(imagepath, axis=0))
+    try:
+        preds = model.predict(np.expand_dims(imagepath, axis=0))
+    except:
+        pruned = model.prune(np.expand_dims(imagepath, axis=0), "out:0")
+        print(pruned)
+        pruned(tf.ones([]))
     preds = np.array(preds).mean(axis=0)
     return preds
 
@@ -31,8 +33,9 @@ def uploadfile():
     img = cv2.imdecode(npimg, cv2.IMREAD_COLOR)
     try:
         result = str(topacc(img))
-        return (result)
-    except:
+        return result
+    except Exception as e:
+        print(e)
         print('failed')
     return "DONE:DONE"
 
