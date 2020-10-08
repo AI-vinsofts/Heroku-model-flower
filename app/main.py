@@ -14,17 +14,7 @@ app = Flask(__name__)
 
 def topacc(imagepath):
     model = load_model(r'model')
-
-    categories = ('alstroemeria', 'anemone', 'anthurium', 'arumlily', 'baloon flower', 'bellisdaisy', 'birdofparadise',
-              'bouvardia', 'cherryblossom', 'coneflower',
-              'cornflower', 'cypress', 'daffodil', 'dahlia', 'daisy', 'dandelion', 'dandelion',
-              'edelweiss flower', 'foxglove', 'gazania',
-              'hibicus', 'honeysuckle', 'hydrangea', 'iris', 'jasminum polyanthum', 'jasminum sambac', 'lantana',
-              'laurel', 'lilac', 'lilies',
-              'lilyofthevalley', 'lotus', 'loveinthemist', 'lupin', 'morningglory', 'myosotis', 'myrtus', 'orchid',
-              'pansy', 'plumeria',
-              'poinsettia', 'protea', 'ranunculus', 'rose', 'spearthistle', 'sunflower', 'tansy', 'tulip',
-              'waterlilies', 'whiteclover', 'yarrow')
+    print(model)
     x = np.expand_dims(imagepath, axis=0)
     imagepath = cv2.cvtColor(imagepath, cv2.COLOR_BGR2RGB)
     imagepath = cv2.resize(imagepath, (224, 224)).astype('float16')
@@ -35,14 +25,11 @@ def topacc(imagepath):
 
 @app.route('/', methods=['GET', 'POST'])
 def uploadfile():
-    print("success")
     file = request.files['image'].read()
-    print(file)
     npimg = np.fromstring(file, np.uint8)
     img = cv2.imdecode(npimg, cv2.IMREAD_COLOR)
     try:
         result = str(topacc(img))
-        print(result)
         return (result)
     except:
         print('failed')
